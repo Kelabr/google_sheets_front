@@ -6,6 +6,7 @@ export default function Home() {
 
   const [data, setData] = useState([])
   const [error, setError] = useState('')
+  const [searchTerm, setSearchTerm] = useState("")
 
   async function getProfs(){
 
@@ -37,22 +38,37 @@ export default function Home() {
     getProfs();
   }, [])
 
+  const filteredData = data.filter(
+    (prof) =>
+      prof.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      prof.matricula.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div>
-      <h1>Lista de professores</h1>
+    <div className="px-4 pt-4">
       {error && <p className="text-rose-600">Error: {error}</p>}
+
+      <input
+        type="text"
+        placeholder="Pesquisar por nome ou matrícula..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="border p-2 rounded-md mb-4 w-full"
+      />
 
       <ul>
         {data.length === 0 ? (
           <p>Carregando...</p>
         ) : (
-          data.map((prof, index) => (
+          filteredData.map((prof, index) => (
             <div key={index}>
-              <span>Nome: {prof.nome} / Matrícula: {prof.matricula} / Escola: {prof.escola}</span>
-              
+              <span>
+                Nome: {prof.nome} / Matrícula: {prof.matricula} / Escola: {prof.escola}
+              </span>
+
             </div>
-            
           ))
+            
         )}
       </ul>
     </div>
